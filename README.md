@@ -1,6 +1,6 @@
 # bangji
 
-채용 공고 평가 도우미. 구성: `web`(Node/TypeScript, 8080), `evaluator`(Python, 8000), `apphost`(Aspire AppHost). 자세한 설계는 `PRD.md`, `TRD.md`를 본다.
+범용 스크리닝 기반 업무 자동화 앱. 수집처에서 항목을 모아 내 기준으로 선별하고, 근거를 검토한 뒤 사실에 연결된 작업물을 만든다(현재 대표 시나리오: 채용 공고 → 맞춤 이력서). 구성: `web`(Node/TypeScript, 8080), `evaluator`(Python, 8000), `apphost`(Aspire AppHost). 자세한 설계는 `PRD.md`, `TRD.md`를 본다.
 
 ## 사전 준비
 

@@ -31,7 +31,7 @@ test('도우미는 수집처 준비를 안내하고 Escape로 닫힌 뒤 포커�
   await trigger.click();
   await expect(page.getByRole('dialog', { name: '설계 도우미' })).toBeFocused();
   await expect(page.getByRole('textbox', { name: '도우미에게 보낼 메시지' })).toBeVisible();
-  await expect(page.getByLabel('수집처 URL')).toBeVisible();
+  await expect(page.getByText('데모 수집처 화면을 자동으로 열고')).toBeVisible();
   await page.keyboard.press('Escape');
   await expect(page.getByRole('dialog')).toHaveCount(0);
   await expect(trigger).toBeFocused();

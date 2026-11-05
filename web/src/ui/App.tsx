@@ -134,7 +134,7 @@ function Home({ go, wiz, setWiz, onOpenAssistant, onDelete }: { go: (to: string)
     <div className="stack">
       <section className="hero">
         <h1>반복되는 선별 업무, 기준만 정하면 자동으로</h1>
-        <p>채용 공고를 모아 내 조건으로 선별하고, 근거를 검토한 뒤 맞춤 이력서를 만들어요.</p>
+        <p>수집처에서 항목을 모아 내 조건으로 선별하고, 근거를 검토한 뒤 사실에 연결된 작업물을 만들어요. 지금은 채용 공고 → 맞춤 이력서 흐름을 체험할 수 있어요.</p>
         <p className="hint">수집처 선택 → 조건·이력서 확인 → 결과 검토 → 맞춤 이력서 내보내기</p>
         {busy && <Spinner label={action === 'delete' ? '내 데이터를 삭제하는 중…' : '워크스페이스를 만드는 중…'} />}
         {error && <Notice kind="error">{error}</Notice>}
