@@ -34,7 +34,7 @@ async function req<T>(method: string, url: string, body?: unknown): Promise<T> {
   return json as T;
 }
 
-export type TemplateName = 'jobsToResume' | 'jobsListOnly' | 'twoSourceMerge' | 'empty';
+export type TemplateName = 'jobsToResume' | 'jobsListOnly' | 'twoSourceMerge' | 'reviewFirstList' | 'twoSourceResume' | 'priceMonitor' | 'hackathonMonitor' | 'empty';
 
 export interface NodeRunState {
   status: string;
@@ -49,7 +49,7 @@ export interface RunDoc {
   status: string;
   nodes: Record<string, NodeRunState>;
   summary?: string;
-  artifacts?: unknown[];
+  artifacts?: unknown[] | Record<string, unknown>;
 }
 export interface ReviewDecision { itemId: string; approve: boolean }
 

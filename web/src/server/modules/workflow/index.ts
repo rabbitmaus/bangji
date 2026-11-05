@@ -8,7 +8,7 @@ import {
   type WorkflowApproval, type WorkflowDefinition,
 } from './schema.js';
 import { getWorkflowDoc, listWorkflowDocs, saveWorkflowDoc, workflowDocId, type WorkflowDoc } from './store.js';
-import { emptyTemplate, jobsListOnlyTemplate, jobsToResumeTemplate, twoSourceMergeTemplate } from './templates.js';
+import { emptyTemplate, jobsListOnlyTemplate, jobsToResumeTemplate, hackathonMonitorTemplate, priceMonitorTemplate, reviewFirstListTemplate, twoSourceMergeTemplate, twoSourceResumeTemplate } from './templates.js';
 import { canonicalHash, diffDefinitions, validateDefinition } from './validate.js';
 import { mountAssistantRoutes } from './assistantRoutes.js';
 
@@ -44,7 +44,9 @@ const mod: RegisterModule = (router, ctx) => {
     const p = { id, name: parsed.data.name, goal: parsed.data.goal };
     const t = parsed.data.template;
     const base = t === 'jobsToResume' ? jobsToResumeTemplate(p) : t === 'jobsListOnly' ? jobsListOnlyTemplate(p)
-      : t === 'twoSourceMerge' ? twoSourceMergeTemplate(p) : emptyTemplate(p);
+      : t === 'twoSourceMerge' ? twoSourceMergeTemplate(p) : t === 'reviewFirstList' ? reviewFirstListTemplate(p)
+      : t === 'twoSourceResume' ? twoSourceResumeTemplate(p) : t === 'priceMonitor' ? priceMonitorTemplate(p)
+      : t === 'hackathonMonitor' ? hackathonMonitorTemplate(p) : emptyTemplate(p);
     const definition: WorkflowDefinition = { ...base, revision: 1 };
     const now = new Date().toISOString();
     const doc = await saveWorkflowDoc(ctx.store, {

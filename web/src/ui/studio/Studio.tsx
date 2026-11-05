@@ -13,6 +13,10 @@ const TEMPLATES: { id: TemplateName; label: string }[] = [
   { id: 'jobsToResume', label: '채용 공고 → 이력서 맞춤' },
   { id: 'jobsListOnly', label: '채용 공고 목록만' },
   { id: 'twoSourceMerge', label: '두 출처 병합' },
+  { id: 'reviewFirstList', label: '검토 우선 목록' },
+  { id: 'twoSourceResume', label: '두 출처 병합 + 이력서 맞춤' },
+  { id: 'priceMonitor', label: '상품 가격 모니터링' },
+  { id: 'hackathonMonitor', label: '해커톤·대회 모니터링' },
   { id: 'empty', label: '빈 워크플로' },
 ];
 const STATUS_TEXT = { draft: '초안', validated: '검증됨', approved: '승인됨' } as const;

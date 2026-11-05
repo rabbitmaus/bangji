@@ -2,5 +2,5 @@
 export * from './schema.js';
 export * from './catalog.js';
 export { validateDefinition, topologicalOrder, diffDefinitions, canonicalHash, type ValidateContext } from './validate.js';
-export { jobsToResumeTemplate, jobsListOnlyTemplate, twoSourceMergeTemplate, emptyTemplate, type TemplateParams } from './templates.js';
+export { jobsToResumeTemplate, jobsListOnlyTemplate, twoSourceMergeTemplate, reviewFirstListTemplate, twoSourceResumeTemplate, priceMonitorTemplate, hackathonMonitorTemplate, emptyTemplate, type TemplateParams } from './templates.js';
 export { getWorkflowDoc, saveWorkflowDoc, listWorkflowDocs, workflowDocId, WORKFLOW_TTL, type WorkflowDoc } from './store.js';

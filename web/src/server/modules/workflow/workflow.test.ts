@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
-  canonicalHash, diffDefinitions, jobsListOnlyTemplate, jobsToResumeTemplate, topologicalOrder, twoSourceMergeTemplate,
+  canonicalHash, diffDefinitions, jobsListOnlyTemplate, jobsToResumeTemplate, topologicalOrder, twoSourceMergeTemplate, priceMonitorTemplate, hackathonMonitorTemplate, reviewFirstListTemplate, twoSourceResumeTemplate,
   validateDefinition, type WorkflowDefinition,
 } from './contract.js';
 
@@ -9,7 +9,7 @@ const codes = (d: WorkflowDefinition, ctx?: { hasResumeFacts?: boolean }) => val
 
 describe('templates', () => {
   it('모든 템플릿이 유효해요', () => {
-    for (const t of [jobsToResumeTemplate(), jobsListOnlyTemplate(), twoSourceMergeTemplate()]) {
+    for (const t of [jobsToResumeTemplate(), jobsListOnlyTemplate(), twoSourceMergeTemplate(), reviewFirstListTemplate(), twoSourceResumeTemplate(), priceMonitorTemplate(), hackathonMonitorTemplate()]) {
       expect(validateDefinition(t, { hasResumeFacts: true }).errors).toEqual([]);
       expect(t.layout).toBeTruthy();
     }

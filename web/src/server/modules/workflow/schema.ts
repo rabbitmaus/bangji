@@ -95,7 +95,7 @@ export interface DefinitionChange {
 
 export const saveWorkflowBodySchema = z.object({ baseRevision: z.number().int().min(0), definition: workflowDefinitionSchema });
 export const createWorkflowBodySchema = z.object({
-  template: z.enum(['jobsToResume', 'jobsListOnly', 'twoSourceMerge', 'empty']).default('empty'),
+  template: z.enum(['jobsToResume', 'jobsListOnly', 'twoSourceMerge', 'reviewFirstList', 'twoSourceResume', 'priceMonitor', 'hackathonMonitor', 'empty']).default('empty'),
   name: z.string().trim().min(1).max(80).optional(),
   goal: z.string().max(2000).optional(),
 });

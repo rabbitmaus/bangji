@@ -3,7 +3,7 @@ import { api, errorMessage } from './api';
 import { postSse } from './sse';
 import { useHashRoute, usePersisted } from './hooks';
 import { DEMO_CRITERIA_TEXT, Notice, Spinner, initialWizard, useAction, type WizardState } from './common';
-import { ChartBar, ChatCircleText, CursorClick, House, MagicWand, SquaresFour, Moon, Sun, TreeStructure } from '@phosphor-icons/react';
+import { ChatCircleText, CursorClick, House, MagicWand, SquaresFour, Moon, Sun, TreeStructure } from '@phosphor-icons/react';
 import { Button, UiIcon } from './design/primitives';
 import { Wizard } from './Wizard';
 import { RunView } from './RunView';
@@ -57,7 +57,6 @@ export function App() {
   const nav = [
     { href: '#/', label: '홈', icon: House, active: !parts[0] },
     { href: '#/wizard', label: '설정 마법사', icon: MagicWand, active: parts[0] === 'wizard' },
-    { href: '#/demo', label: '데모 결과', icon: ChartBar, active: parts[0] === 'demo' },
     { href: '#/studio', label: 'Workflow 스튜디오', icon: TreeStructure, active: parts[0] === 'studio' },
     { href: '#/workflow', label: '워크플로', icon: TreeStructure, active: parts[0] === 'workflow' },
   ];

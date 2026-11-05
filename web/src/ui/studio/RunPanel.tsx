@@ -154,7 +154,7 @@ export function RunPanel({ workflowId, revision, def, trigger, onRunDoc, onSelec
         <div className="wf-final">
           <h3>최종 결과</h3>
           {doc.summary && <p>{doc.summary}</p>}
-          {(doc.artifacts ?? []).map((a, i) => <Artifact key={i} a={a} />)}
+          {(Array.isArray(doc.artifacts) ? doc.artifacts : Object.values(doc.artifacts ?? {})).map((a, i) => <Artifact key={i} a={a} />)}
         </div>
       )}
       {confirm && (
