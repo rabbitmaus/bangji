@@ -921,3 +921,106 @@ PRD 2.3의 지표는 데모 게시판 정답 라벨(PRD 3.1)과 11장의 지표�
 - FR-30 검색 API: 수집처 종류에 `search`를 더해 검색 결과 URL 목록을 수집 계약의 시작점으로 쓴다.
 - FR-31·FR-32 템플릿: 템플릿마다 필드 집합, 규칙 Gate 파서, 에이전트 지시문, 결과물 생성 에이전트와 검증기를 바꾼다. 수집 엔진, 워크플로 골격, SSE, 결과 보드, 비교·수락 화면은 그대로 쓴다.
 - FR-33 예약 실행과 다중 페이지 수집: 스케줄러와 lease 기반 작업자, 재시작 후 재개, 페이지 이동 규칙, selector 자동 재식별을 더한다.
+
+## 14. Workflow 스튜디오 (제한된 타입 DAG 편집기)
+
+PRD 10.1의 범위 변경에 따른 설계다. 현재 구현 상태는 코드를 기준으로 하며, 측정값은 `docs/measurements/`에 하니스 출력이 있을 때만 PRD에 반영한다(M1~M7은 그 전까지 `미측정`).
+
+### 14.1 모듈과 API
+
+- 모듈 `web/src/server/modules/workflow/*`: 정의 저장·검증·승인·샘플 실행·실행 엔진·AI 변경안.
+- 엔드포인트 `/api/workflows*`: 정의 생성(템플릿), 조회, 수정(ETag), `validate`, `approve`, 샘플 실행, 실행, 선택 재실행, 버전 비교, AI 변경안 제안·적용·거절. 오류 형식과 게스트 쿠키 요구는 8.1과 같다.
+- 한도: `LIMIT_PREP_PER_HOUR`(수집 준비), `LIMIT_ASSISTANT_PER_HOUR`(AI 변경안)을 9.6의 남용 한도에 더한다.
+
+### 14.2 데이터 모델
+
+- `WorkflowDefinition`: `id`, `version`, `status`(draft·validated·approved), `nodes[]`(type, label, params), `edges[]`, `workspaceId`. 노드 타입은 카탈로그(collect, mergeDedupe, normalizeFields, ruleFilter, evidenceEvaluate, branch, humanReview, tailor, exportMarkdown, exportList)만 허용한다. 임의 코드·루프·외부 제출 노드는 검증에서 거부한다.
+- 승인 해시: 승인 시점의 정의(노드·엣지·파라미터)를 정규화해 해시를 저장한다. 실행은 현재 정의 해시가 승인 해시와 같을 때만 시작한다. 정의를 고치면 승인이 풀린다.
+- `NodeRun`: `runId`, `nodeId`, `status`, 입력·출력 요약, 소요 시간, 모델 호출 수, 예산 소모. 샘플 실행과 실제 실행이 같은 형식을 쓴다.
+- 실행 스냅샷: 실행 시작 시 조건 집합과 이력서 버전, 정의 버전을 실행 문서에 고정한다(FR-39).
+- 게스트 데이터는 이전과 같이 7일 보존(TTL)이다.
+
+### 14.3 실행 책임
+
+TypeScript(web)가 그래프 실행의 기준(authoritative)이다. 위상 순서 실행, 예산 집행, 승인 해시 확인, 취소를 web이 맡는다. Python evaluator는 `evidenceEvaluate` 복합 노드로 호출되며 내부는 Agent Framework의 실제 `WorkflowBuilder` 그래프(4장)다. evaluator는 정의 전체를 알지 못한다.
+
+### 14.4 관측
+
+노드마다 span을 만들고 `workflow.id`, `workflow.version`, `node.id`, `node.type`을 속성으로 단다. 샘플 실행도 같은 span을 쓰며, 트레이스 ID는 실행 정보(FR-25)에 표시한다.
+
+### 14.5 AI 변경안
+
+도우미는 정의를 직접 바꾸지 않고 diff를 제안한다. 서버가 제안을 카탈로그·그래프 규칙으로 검증하고 샘플로 시험한 결과와 함께 보여 주며, 사용자가 `적용`·`거절`한다. 적용 후에는 draft로 돌아가 다시 검증·승인이 필요하다.
+
+### 14.6 선택적 Browserbase
+
+`BROWSERBASE_API_KEY`가 있을 때만 데모 보드를 제외한 사용자 지정 URL 수집이 Browserbase를 쓴다. 기본은 로컬 Chromium이며, 키를 설정하면 페이지 데이터가 외부로 나간다는 고지를 README와 화면에 둔다.
+
+
+## 15. 고도화 설계: 워크플로 정의 중심 아키텍처
+
+제품 배경·완료 기준은 `PRD.md` 12장을 따른다. 14장의 제한형 DAG 편집기를 확장하는 계획이며 구현 완료를 의미하지 않는다.
+
+### 15.1 원칙과 구조
+
+보여 주는 그래프와 실행하는 그래프는 같아야 한다. 채팅은 실행기와 무관한 JSON 창이 아니고, 캔버스는 장식이 아니다.
+
+```text
+자연어 목표 ──→ 설계 도우미 ──→ 변경 제안
+                                 ↓
+단계 목록 / 시각적 캔버스 ←→ 버전 있는 WorkflowDefinition
+                                 ↓
+                      구조·데이터·정책 검증
+                                 ↓
+                       샘플 실행 → 사용자 승인
+                                 ↓
+                      승인된 버전의 실행 계획
+                                 ↓
+              기존 수집·평가·검증·출력 기능을 호출
+                                 ↓
+                  단계별 상태·근거·실행 기록
+```
+
+### 15.2 최소 데이터 모델
+
+| 객체 | 필요한 정보 |
+|---|---|
+| `WorkflowDefinition` | 스키마 버전, 워크플로 ID·revision, 입력 스키마, 노드·포트·연결, 실행 한도, 승인 정책 |
+| `NodeDefinition` | 허용 종류·버전, 설정, 입출력 스키마, 재시도·부작용 정책 |
+| `WorkflowDraft` | 기준 revision, 제안 변경, 사용자에게 물을 사항, 검증 오류 |
+| `WorkflowRun` | 실행한 정의의 고정 버전, 입력 참조, 계약·기준·자료 버전, 실행 상태 |
+| `NodeRun` | 시도 번호, 입력 참조·해시, 출력 참조, 상태·오류·비용, 재개 정보 |
+| `RunEvent` | 영속 순번, 실행·노드 ID, 상태 변화, 공개 진행 정보 |
+
+캔버스 좌표·색상은 실행 의미와 분리한다. TypeScript(Zod)와 Python(Pydantic) 계약은 버전 있는 공통 스키마와 계약 테스트로 맞춘다. 기존 템플릿은 `WorkflowDefinition v1`로 변환해 같은 결과가 나오는지 비교한다. 모델은 허용 노드 카탈로그만 조합하며 임의 도구·코드·비밀 값을 정의에 넣을 수 없다. 이력서 검증·필수 승인 같은 정책은 사용자가 지울 수 있는 노드로 만들지 않고 서버의 실행·내보내기 경계에서도 검사한다.
+
+### 15.3 실행 책임
+
+워크플로 전체의 상태·분기·재시도는 하나의 실행 계층(TypeScript 서비스)이 맡는다. 기존 Python Agent Framework 평가기는 그 안에서 호출되는 복합 작업이며 Copilot/Agent Framework 호출과 검증만 수행한다. 새 프레임워크와 기존 실행기가 같은 작업을 각각 재시도하는 이중 구조는 피한다. 라이브러리 추가만으로 영속 실행이 생기지 않으므로, 선정 전에 승인 대기·취소·재시작을 포함한 작은 실행으로 저장·복구 동작을 확인한다.
+
+### 15.4 저장·마이그레이션
+
+Cosmos DB에는 워크스페이스별 정의·노드 실행·승인·작업 명령을, Blob에는 큰 원문·산출물을 저장하는 기존 경계를 유지한다. 기존 실행은 `legacy-v1`로 읽고 새 실행부터 입력 스냅샷·해시를 고정하며, 입력이 수정·삭제된 과거 실행을 완전 재현 가능하다고 표시하지 않는다. 조건·이력서 사실 수정은 기존 참조를 덮어쓰지 않고 새 버전으로 분리한다. 초안과 승인 버전을 구분하고 승인은 정의·입력 버전·실행 범위에 묶어 변경 시 재승인한다. 결과 재사용은 입력뿐 아니라 노드·설정·정책 버전과 유효 기간을 확인하고, 새 모델 실행과 저장 결과 재생을 구분한다. 정의·입력·이벤트는 처음부터 영속 저장하며, 수준 3에서 작업 lease·체크포인트·중복 명령 처리를 더한다. 저장 실패를 무시한 이벤트 스트림은 복구 근거로 쓰지 않는다.
+
+### 15.5 에이전틱 생성 구현
+
+설계 에이전트 하나 + 코드 검증기 + 제한 실행 도구(기능 조회, DOM 확인, 필드 추출 시험, 워크플로 검증, 제한 샘플 실행, 변경안 작성). 저장·실행은 서버 검증을 통과한 구조화 결과만 받고, 기준 revision 불일치 시 변경안을 거부한다. 샘플 시험은 항목 수·시간·모델 호출 예산을 제한하고 취소할 수 있다. 조건 생성·이력서 준비·대화의 한도는 본 실행 예산과 분리하고, 도우미도 구조화 호출과 같은 SDK 클라이언트 경로(fake 분기 포함)를 쓰게 한다.
+
+### 15.6 오픈소스 검토 (2026-11-05 기준, 통합·성능 미검증)
+
+라이선스는 요약이며 도입 시 정확한 버전·패키지·사용 형태로 재확인한다.
+
+| 프로젝트 | 필요한 부분 | 라이선스·주의 | 권고 |
+|---|---|---|---|
+| [React Flow / xyflow](https://github.com/xyflow/xyflow) | 커스텀 노드·포트, 연결 검증 | MIT 코어, 유료 Pro 예제 구분 | **캔버스 1순위 후보.** 스키마·검증기·런타임은 별도 연결 |
+| [LangGraph.js](https://github.com/langchain-ai/langgraphjs) | 승인 중단·재개, 체크포인트 패턴 | MIT, 운영에는 영속 checkpointer 필요 | 패턴 참고. 기존 실행 계층이 부족할 때만 통합 검증 |
+| [Dify](https://github.com/langgenius/dify) | 단일 노드 시험, 입출력·오류 inspector, 중간 결과 수정 후 재시험 | 추가 조건이 있는 Apache 기반(멀티테넌트·표시 의무 검토) | UX 참고. 포크·임베딩 비기본 |
+| [n8n](https://github.com/n8n-io/n8n) | 자연어 초안→검토·수정, 데이터 고정, 부분 실행 | Sustainable Use License(OSI 아님), 상업 임베딩은 별도 검토 | 흐름 참고. AI builder를 무료 셀프호스팅 기능으로 가정 금지 |
+| [Flowise](https://github.com/FlowiseAI/Flowise) | Agentflow 분기·사람 검토·상태 전달·단계 추적 | Apache-2.0 기반, enterprise 별도 범위 | 분기·관찰 UX 참고, 전체 도입 보류 |
+| [Mastra](https://github.com/mastra-ai/mastra) | TypeScript 대안 프레임워크 | Apache-2.0 기반, `ee/` 별도 | 비채택(교체 비용 대비 이득 미입증) |
+
+참고할 흐름: n8n [AI Workflow Builder](https://docs.n8n.io/build/ways-of-building-workflows/ai-workflow-builder.md)(생성 후 사용자가 설정 검토), [데이터 고정](https://docs.n8n.io/build/work-with-data/pin-and-mock-data.md)·[부분 실행](https://docs.n8n.io/build/understand-workflows/understand-executions/types-of-executions.md), Dify [Step Run](https://docs.dify.ai/en/cloud/use-dify/debug/step-run.md), Flowise [Agentflow V2](https://docs.flowiseai.com/using-flowise/agentflowv2)·[Analytics](https://docs.flowiseai.com/using-flowise/analytics.md), LangGraph [Interrupts](https://docs.langchain.com/oss/javascript/langgraph/interrupts). 테스트 표본과 운영 원문을 구분하고, 표본을 수정해 만든 결과를 검증된 원문처럼 내보내지 않는다. 문서의 버전 간 변경 가능성 때문에 안정된 내부 계약 없이 의존하지 않는다.
+
+**채택 범위**: React Flow + 기존 Zod/Pydantic 계약 + 기존 Copilot SDK·Agent Framework 평가기 + 기존 Cosmos/Blob. [커스텀 노드](https://reactflow.dev/learn/customization/custom-nodes)·[연결 검증](https://reactflow.dev/examples/interaction/validation)을 쓰되 UI 검증만으로 안전을 가정하지 않고 서버에서도 검증한다. LangGraph·Mastra·CopilotKit(GitHub Copilot SDK와 별개)·Temporal을 한꺼번에 붙이지 않으며, 현 SSE·상태 동기화로 충분하면 추가 통합하지 않는다.
+
+라이선스 원문: [xyflow](https://github.com/xyflow/xyflow/blob/main/LICENSE), [LangGraph.js](https://github.com/langchain-ai/langgraphjs/blob/main/LICENSE), [Dify](https://github.com/langgenius/dify/blob/main/LICENSE), [n8n](https://github.com/n8n-io/n8n/blob/master/LICENSE.md), [Flowise](https://github.com/FlowiseAI/Flowise/blob/main/LICENSE.md), [Mastra](https://github.com/mastra-ai/mastra/blob/main/LICENSE.md). 이번 권고는 코드를 가져오지 않고 공식 문서의 사용자 흐름을 자체 구현에 참고하는 것이다.
