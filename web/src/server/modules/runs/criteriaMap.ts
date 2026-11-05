@@ -34,8 +34,11 @@ export function cardsToStored(cards: UiCard[]): { ruleCards: any[]; semanticCard
     }
     if (criterion === 'deadline') params.notPast = true;
     if (criterion === 'experience') {
-      const n = value.match(/\d+(?:\.\d+)?/);
-      if (n) params.minYears = Number(n[0]);
+      // '3년 이상'/'5년 이하'만 범위로 보고, 그냥 '3년'은 내 경력이라 공고 요구 연수와 비교한다.
+      const min = value.match(/(\d+(?:\.\d+)?)\s*년\s*이상/);
+      const max = value.match(/(\d+(?:\.\d+)?)\s*년\s*(?:이하|미만)/);
+      if (min) params.minYears = Number(min[1]);
+      if (max) params.maxYears = Number(max[1]);
     }
     ruleCards.push({ id: c.id, kind: 'rule', criterion, label: String(c.label || value || c.kind).slice(0, 80), required, params });
   }

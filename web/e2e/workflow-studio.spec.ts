@@ -44,6 +44,7 @@ test('Workflow 스튜디오: 템플릿 → 편집 → 검증 → AI 변경안 �
   await expect(page.getByRole('status').first()).toBeVisible({ timeout: 60_000 });
 
   await page.getByRole('button', { name: '승인' }).click();
-  await page.getByRole('button', { name: '실행' }).click();
-  await expect(page.getByText(/실행 중|완료|running|completed/).first()).toBeVisible({ timeout: 60_000 });
+  await page.getByRole('button', { name: '실행', exact: true }).click();
+  await page.getByRole('button', { name: '실행 시작' }).click();
+  await expect(page.getByText(/실행 상태/)).toBeVisible({ timeout: 60_000 });
 });

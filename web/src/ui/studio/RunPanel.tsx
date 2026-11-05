@@ -125,7 +125,7 @@ export function RunPanel({ workflowId, revision, def, trigger, onRunDoc, onSelec
               <span>모델 호출 {s.modelCalls}</span>
               {runId && <button type="button" onClick={() => act(() => wf.rerun(runId, id))}>여기서부터 다시 실행</button>}
             </div>
-            {s.error && <p className="wf-issue-inline">오류: {s.error}</p>}
+            {s.error && <p className="wf-issue-inline">오류: {typeof s.error === "string" ? s.error : s.error.message ?? s.error.code}</p>}
             {s.preview?.length > 0 && (
               <ul className="wf-preview">{s.preview.slice(0, 3).map((p, i) => <li key={i}>{trunc(p)}</li>)}</ul>
             )}

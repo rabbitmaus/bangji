@@ -63,9 +63,11 @@ export function TailoringView({ id, go }: { id: string; go: (to: string) => void
     setOriginals(toMap(snapshot.originals));
     setChanges(snapshot.changes ?? []);
     setChoice(snapshot.decisions ?? {});
-    setVerif(Object.fromEntries((snapshot.sentences ?? []).filter((s) => s.status === 'verified' || s.status === 'unsupported').map((s) => [
+    // 스냅샷이 늦게 도착해도 이미 스트림으로 받은 검증 결과를 지우지 않는다.
+    const saved = Object.fromEntries((snapshot.sentences ?? []).filter((s) => s.status === 'verified' || s.status === 'unsupported').map((s) => [
       s.sentenceId, { sentenceId: s.sentenceId, status: s.status as Verification['status'], reasons: s.reasons },
-    ])));
+    ]));
+    setVerif((m) => ({ ...m, ...saved }));
     setMarkdown(snapshot.finalMarkdown ?? null);
     setFailure(snapshot.failureCode ?? null);
     restoredReview.current = snapshot.status !== 'running';
@@ -244,7 +246,7 @@ export function TailoringView({ id, go }: { id: string; go: (to: string) => void
                 <li key={c.id} className="card card-inner">
                   <div className="row wrap between">
                     <strong>{CHANGE_TEXT[c.type]} · {c.sentenceId ?? c.id}</strong>
-                    <VerifBadge v={c.sentenceId ? verif[c.sentenceId] : undefined} />
+                    {c.sentenceId && <VerifBadge v={verif[c.sentenceId]} />}
                   </div>
                   <div className="compare">
                     <div>

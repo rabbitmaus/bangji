@@ -41,7 +41,7 @@ export interface NodeRunState {
   inputCount: number;
   outputCount: number;
   preview: unknown[];
-  error?: string;
+  error?: string | { code?: string; message?: string };
   modelCalls: number;
 }
 export interface RunDoc {

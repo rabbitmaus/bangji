@@ -59,7 +59,7 @@ test.describe.serial('PRD 3장 경로 전체 · 인젝션 · 맞춤 이력서', 
     await card(page, COMPANY.D1).getByRole('button', { name: '맞춤 이력서 만들기' }).click();
     await expect(page.getByRole('heading', { name: '원본과 변경 비교' })).toBeVisible({ timeout: 60_000 });
     for (const accept of await page.getByRole('radio', { name: '수락' }).all()) {
-      if (await accept.isEnabled()) await accept.click();
+      if (await accept.isEnabled()) await accept.check({ force: true });
     }
     const [download] = await Promise.all([
       page.waitForEvent('download'),

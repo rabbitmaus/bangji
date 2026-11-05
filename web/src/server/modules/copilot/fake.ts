@@ -16,7 +16,10 @@ function fakeCriteria(text: string) {
   if (/경력|신입|년차|\d+\s*년/.test(text)) {
     const m = text.match(/(\d+)\s*년\s*(?:이상|이하|미만)?/);
     const params: Record<string, number> = {};
-    if (m) { if (/이하|미만/.test(text)) params.maxYears = Number(m[1]); else params.minYears = Number(m[1]); }
+    // 이상·이하·미만이 없으면 '내 경력'으로 보고 공고 요구 연수와 비교한다.
+    if (m && /이하|미만/.test(text)) params.maxYears = Number(m[1]);
+    else if (m && /이상/.test(text)) params.minYears = Number(m[1]);
+    else if (m) params.myYears = Number(m[1]);
     ruleCards.push({ id: id(), kind: 'rule', criterion: 'experience', label: '경력 연수', required: true, params });
   }
   const found = REGIONS.filter((r) => text.includes(r));
