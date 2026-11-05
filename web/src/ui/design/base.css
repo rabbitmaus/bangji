@@ -1,0 +1,93 @@
+@import './tokens.css';
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  margin: 0;
+}
+
+html {
+  background: var(--color-bg-canvas);
+  font-family: var(--font-ui);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  scroll-padding-top: calc(var(--size-header) + var(--space-4));
+}
+
+body {
+  color: var(--color-fg-primary);
+  background: var(--color-bg-canvas);
+  font-size: var(--font-size-ui);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+button,
+input,
+textarea,
+select {
+  color: inherit;
+  font: inherit;
+}
+
+h1, h2, h3, h4, p { margin: 0; }
+h1 { font-size: clamp(22px, 2.5vw, 28px); font-weight: var(--font-weight-semibold); line-height: 1.35; letter-spacing: -0.02em; }
+h2 { font-size: 18px; font-weight: var(--font-weight-semibold); line-height: 1.45; }
+h3 { font-size: 15px; font-weight: var(--font-weight-semibold); line-height: 1.5; }
+h4 { font-size: var(--font-size-caption); font-weight: var(--font-weight-medium); color: var(--color-fg-muted); margin-bottom: var(--space-1); }
+a { color: var(--color-accent-action); text-underline-offset: 3px; }
+code, pre, kbd { font-family: var(--font-mono); }
+img { max-width: 100%; }
+button, a, input, select, textarea, summary { -webkit-tap-highlight-color: transparent; }
+button, a, summary { touch-action: manipulation; }
+button svg, a svg { flex-shrink: 0; }
+fieldset { min-inline-size: 0; }
+[id] { scroll-margin-top: var(--space-4); }
+[hidden] { display: none !important; }
+
+::selection {
+  color: var(--color-fg-primary);
+  background: var(--color-accent-action-soft);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent-action);
+  outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  html { scroll-padding-top: 132px; }
+  input, select, textarea { font-size: 16px; }
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-stroke-strong) transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 2px solid Highlight;
+  }
+}

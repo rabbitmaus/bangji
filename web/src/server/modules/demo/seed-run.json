@@ -1,0 +1,254 @@
+{
+  "id": "seed-run",
+  "readOnly": true,
+  "note": "미리 계산된 데모 결과예요. 읽기 전용입니다.",
+  "criteria": [
+    {
+      "id": "deadline",
+      "kind": "rule",
+      "text": "마감일이 지나지 않음",
+      "required": true
+    },
+    {
+      "id": "experience",
+      "kind": "rule",
+      "text": "경력 3년 이내 지원 가능",
+      "required": true
+    },
+    {
+      "id": "location",
+      "kind": "rule",
+      "text": "서울·경기 또는 원격",
+      "required": true
+    },
+    {
+      "id": "role",
+      "kind": "semantic",
+      "text": "백엔드(Node.js/TypeScript) 직무",
+      "required": true
+    }
+  ],
+  "summary": {
+    "pass": 3,
+    "reject": 3,
+    "hold": 2
+  },
+  "items": [
+    {
+      "itemKey": "D1",
+      "company": "청솔소프트",
+      "title": "백엔드 개발자"
+    },
+    {
+      "itemKey": "D2",
+      "company": "한결테크",
+      "title": "서버 개발자"
+    },
+    {
+      "itemKey": "D3",
+      "company": "다온랩",
+      "title": "백엔드 엔지니어"
+    },
+    {
+      "itemKey": "D4",
+      "company": "미르커머스",
+      "title": "백엔드 개발자"
+    },
+    {
+      "itemKey": "D5",
+      "company": "대성시스템",
+      "title": "시니어 백엔드 개발자"
+    },
+    {
+      "itemKey": "D6",
+      "company": "새벽앱스",
+      "title": "iOS 앱 개발자(Swift)"
+    },
+    {
+      "itemKey": "D7",
+      "company": "누리데이터",
+      "title": "백엔드 개발자"
+    },
+    {
+      "itemKey": "D8",
+      "company": "푸른길컴퍼니",
+      "title": "백엔드 개발자"
+    }
+  ],
+  "verdicts": [
+    {
+      "itemKey": "D1",
+      "decision": "pass",
+      "criteria": [
+        {
+          "criterionId": "deadline",
+          "result": "pass"
+        },
+        {
+          "criterionId": "experience",
+          "result": "pass",
+          "citation": {
+            "quote": "경력 2~5년",
+            "source": "list",
+            "quoteVerified": true
+          }
+        },
+        {
+          "criterionId": "role",
+          "result": "pass",
+          "citation": {
+            "quote": "Node.js와 TypeScript로 결제 API를 개발합니다.",
+            "source": "detail",
+            "quoteVerified": true
+          }
+        }
+      ],
+      "holdReasons": [],
+      "injectionSuspected": false
+    },
+    {
+      "itemKey": "D2",
+      "decision": "pass",
+      "criteria": [
+        {
+          "criterionId": "deadline",
+          "result": "pass"
+        },
+        {
+          "criterionId": "experience",
+          "result": "pass",
+          "citation": {
+            "quote": "경력 3년 이상",
+            "source": "list",
+            "quoteVerified": true
+          }
+        },
+        {
+          "criterionId": "role",
+          "result": "pass",
+          "citation": {
+            "quote": "TypeScript와 NestJS 기반 서버를 개발합니다.",
+            "source": "detail",
+            "quoteVerified": true
+          }
+        }
+      ],
+      "holdReasons": [],
+      "injectionSuspected": false
+    },
+    {
+      "itemKey": "D3",
+      "decision": "pass",
+      "criteria": [
+        {
+          "criterionId": "deadline",
+          "result": "pass"
+        },
+        {
+          "criterionId": "experience",
+          "result": "pass",
+          "citation": {
+            "quote": "경력 1~4년",
+            "source": "list",
+            "quoteVerified": true
+          }
+        },
+        {
+          "criterionId": "role",
+          "result": "pass",
+          "citation": {
+            "quote": "Node.js 기반 마이크로서비스를 운영합니다.",
+            "source": "detail",
+            "quoteVerified": true
+          }
+        }
+      ],
+      "holdReasons": [],
+      "injectionSuspected": false
+    },
+    {
+      "itemKey": "D4",
+      "decision": "reject",
+      "criteria": [
+        {
+          "criterionId": "deadline",
+          "result": "fail",
+          "citation": {
+            "quote": "※ 채용 마감된 공고입니다.",
+            "source": "detail",
+            "quoteVerified": true
+          }
+        }
+      ],
+      "holdReasons": [],
+      "injectionSuspected": false
+    },
+    {
+      "itemKey": "D5",
+      "decision": "reject",
+      "criteria": [
+        {
+          "criterionId": "experience",
+          "result": "fail",
+          "citation": {
+            "quote": "경력 7년 이상",
+            "source": "list",
+            "quoteVerified": true
+          }
+        }
+      ],
+      "holdReasons": [],
+      "injectionSuspected": false
+    },
+    {
+      "itemKey": "D6",
+      "decision": "reject",
+      "criteria": [
+        {
+          "criterionId": "role",
+          "result": "fail",
+          "citation": {
+            "quote": "Swift와 SwiftUI로 iOS 앱을 개발합니다.",
+            "source": "detail",
+            "quoteVerified": true
+          }
+        }
+      ],
+      "holdReasons": [],
+      "injectionSuspected": false
+    },
+    {
+      "itemKey": "D7",
+      "decision": "hold",
+      "criteria": [
+        {
+          "criterionId": "location",
+          "result": "unknown"
+        }
+      ],
+      "holdReasons": [
+        "location_unknown"
+      ],
+      "injectionSuspected": false
+    },
+    {
+      "itemKey": "D8",
+      "decision": "hold",
+      "criteria": [
+        {
+          "criterionId": "role",
+          "result": "pass",
+          "citation": {
+            "quote": "Node.js 기반 서비스 백엔드를 개발합니다.",
+            "source": "detail",
+            "quoteVerified": true
+          }
+        }
+      ],
+      "holdReasons": [
+        "injection_suspected"
+      ],
+      "injectionSuspected": true
+    }
+  ]
+}

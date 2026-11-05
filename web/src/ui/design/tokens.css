@@ -1,0 +1,124 @@
+:root {
+  color-scheme: light;
+
+  /* Aurora P3 OLED v1 hues, with action/status contrast tuned for web text. */
+  --color-bg-canvas: oklch(0.985 0.002 260);
+  --color-bg-surface: oklch(1 0 0);
+  --color-bg-raised: oklch(0.97 0.003 260);
+  --color-bg-elevated: oklch(1 0 0);
+  --color-bg-hover: oklch(0.955 0.004 260);
+  --color-bg-pressed: oklch(0.93 0.006 260);
+
+  --color-fg-primary: oklch(0.22 0.01 260);
+  --color-fg-secondary: oklch(0.42 0.01 260);
+  --color-fg-muted: oklch(0.52 0.01 260);
+  --color-fg-caption: oklch(0.5 0.01 260);
+  --color-fg-disabled: oklch(0.7 0.008 260);
+
+  --color-stroke-subtle: oklch(0.22 0.01 260 / 0.1);
+  --color-stroke-strong: oklch(0.22 0.01 260 / 0.22);
+  --color-stroke-control: oklch(0.6 0.012 260);
+  --color-stroke-focus-gap: oklch(1 0 0);
+
+  --color-accent-action: oklch(0.51 0.19 247);
+  --color-accent-action-hover: oklch(0.48 0.19 247);
+  --color-accent-action-pressed: oklch(0.45 0.18 247);
+  --color-accent-action-soft: oklch(0.55 0.2 247 / 0.12);
+  --color-accent-action-faint: oklch(0.55 0.2 247 / 0.06);
+  --color-accent-on-action: oklch(0.99 0 0);
+
+  --color-accent-danger: oklch(0.54 0.21 25);
+  --color-accent-danger-soft: oklch(0.58 0.22 25 / 0.1);
+  --color-semantic-success: oklch(0.45 0.13 150);
+  --color-semantic-success-soft: oklch(0.55 0.16 150 / 0.12);
+  --color-semantic-warning: oklch(0.46 0.11 70);
+  --color-semantic-warning-soft: oklch(0.62 0.15 70 / 0.14);
+
+  --color-syntax-keyword: oklch(0.5 0.19 247);
+  --color-syntax-function: oklch(0.5 0.17 150);
+  --color-syntax-string: oklch(0.55 0.17 48);
+  --color-syntax-number: oklch(0.55 0.14 82);
+  --color-syntax-operator: oklch(0.5 0.08 285);
+  --color-syntax-comment: oklch(0.6 0.02 260);
+
+  --font-ui:
+    "Pretendard Variable", Pretendard, "Segoe UI Variable", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+  --font-size-caption: 12px;
+  --font-size-ui: 14px;
+  --font-size-data: 14px;
+  --font-size-code: 14px;
+
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+
+  --radius-control: 6px;
+  --radius-surface: 8px;
+  --radius-overlay: 10px;
+
+  --size-icon: 16px;
+  --size-control-compact: 44px;
+  --size-control-primary: 48px;
+  --size-activity-rail: 44px;
+  --size-header: 64px;
+  --size-status-bar: 38px;
+
+  --duration-hover: 110ms;
+  --duration-panel: 160ms;
+  --duration-dialog: 200ms;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+
+  --shadow-overlay: 0 18px 48px oklch(0.2 0.02 260 / 0.18);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg-canvas: oklch(0.028 0.004 260);
+  --color-bg-surface: oklch(0.045 0.005 260);
+  --color-bg-raised: oklch(0.062 0.006 260);
+  --color-bg-elevated: oklch(0.082 0.007 260);
+  --color-bg-hover: oklch(0.105 0.008 260);
+  --color-bg-pressed: oklch(0.13 0.011 260);
+
+  --color-fg-primary: oklch(0.92 0.006 260);
+  --color-fg-secondary: oklch(0.72 0.008 260);
+  --color-fg-muted: oklch(0.64 0.01 260);
+  --color-fg-caption: oklch(0.64 0.01 260);
+  --color-fg-disabled: oklch(0.43 0.008 260);
+
+  --color-stroke-subtle: oklch(0.92 0.006 260 / 0.11);
+  --color-stroke-strong: oklch(0.92 0.006 260 / 0.2);
+  --color-stroke-control: oklch(0.5 0.012 260);
+  --color-stroke-focus-gap: oklch(0.028 0.004 260);
+
+  --color-accent-action: oklch(0.6053 0.1937 246.77);
+  --color-accent-action-hover: oklch(0.66 0.205 246.77);
+  --color-accent-action-pressed: oklch(0.555 0.18 246.77);
+  --color-accent-action-soft: oklch(0.6053 0.1937 246.77 / 0.16);
+  --color-accent-action-faint: oklch(0.6053 0.1937 246.77 / 0.09);
+  --color-accent-on-action: oklch(0.08 0.01 260);
+
+  --color-accent-danger: oklch(0.708008 0.234375 24);
+  --color-accent-danger-soft: oklch(0.708008 0.234375 24 / 0.15);
+  --color-semantic-success: oklch(0.74 0.18 145);
+  --color-semantic-success-soft: oklch(0.74 0.18 145 / 0.13);
+  --color-semantic-warning: oklch(0.79 0.17 82);
+  --color-semantic-warning-soft: oklch(0.79 0.17 82 / 0.14);
+
+  --color-syntax-keyword: oklch(0.7 0.19 247);
+  --color-syntax-function: oklch(0.75 0.2 145);
+  --color-syntax-string: oklch(0.75 0.2 48);
+  --color-syntax-number: oklch(0.77 0.15 82);
+  --color-syntax-operator: oklch(0.72 0.08 285);
+  --color-syntax-comment: oklch(0.52 0.025 260);
+  --shadow-overlay: 0 18px 48px oklch(0 0 0 / 0.48);
+}
